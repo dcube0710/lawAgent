@@ -1,3 +1,3 @@
 package indianKanoon
 
-const DOCTYPE = "judgement"
+const DOCTYPE = "judgements"
