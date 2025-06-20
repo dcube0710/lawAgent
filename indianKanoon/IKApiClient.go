@@ -44,15 +44,13 @@ func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) string {
 }
 
 func (IKA IKApiClient) DocumentFetch(IKSearchdoc IKSearchDocument) string {
-	req, error := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"doc/", nil)
-	req.Header.Add("Authorization", AUTH_TOKEN)
+	req, error := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"doc/"+IKSearchdoc.DocId+"/", nil)
+	req.Header.Add("Authorization", "Token"+" "+AUTH_TOKEN)
 	req.Header.Add("Content-Type", "application/json")
 	if error != nil {
 		fmt.Println("Error creating request for fetching document")
 	}
-	u := req.URL.Query()
-	u.Add("docid", IKSearchdoc.DocId)
-	req.URL.RawQuery = u.Encode()
+
 	res, error := IKA.Client.Do(req)
 	if error != nil {
 		fmt.Println("Error while getting response for fetching document")
