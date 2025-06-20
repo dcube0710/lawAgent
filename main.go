@@ -17,6 +17,8 @@ func main() {
 
 	ikSearchClient := ik.GetIKApiClient()
 	//response := ikSearchClient.SearchQuery(searchData)
-	response := ikSearchClient.DocumentFetch(searchDoc)
+	//response := ikSearchClient.DocumentFetch(searchDoc)
+	response := ikSearchClient.DocumentFetchOriginal(searchDoc)
+
 	fmt.Println(response)
 }
