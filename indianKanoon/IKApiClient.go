@@ -1,6 +1,7 @@
 package indianKanoon
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,8 +17,9 @@ func GetIKApiClient() *IKApiClient {
 	return &IKclient
 }
 
-func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) string {
+func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) IKSearchResponse {
 	req, err := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"search/", nil)
+	searchDocumentResponse := &IKSearchResponse{}
 	if err != nil {
 		fmt.Println("Error creating request for IK search query")
 	}
@@ -39,7 +41,12 @@ func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) string {
 		fmt.Println("Failed to read the response body")
 	}
 
-	return string(body)
+	err = json.Unmarshal(body, searchDocumentResponse)
+	if err != nil {
+		fmt.Println("Error parsing the response")
+	}
+
+	return *searchDocumentResponse
 
 }
 
