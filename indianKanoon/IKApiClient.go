@@ -19,7 +19,7 @@ func GetIKApiClient() *IKApiClient {
 
 func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) IKSearchResponse {
 	req, err := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"search/", nil)
-	searchDocumentResponse := &IKSearchResponse{}
+	searchDocumentResponse := IKSearchResponse{}
 	if err != nil {
 		fmt.Println("Error creating request for IK search query")
 	}
@@ -41,12 +41,12 @@ func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) IKSearchResponse {
 		fmt.Println("Failed to read the response body")
 	}
 
-	err = json.Unmarshal(body, searchDocumentResponse)
+	err = json.Unmarshal(body, &searchDocumentResponse)
 	if err != nil {
 		fmt.Println("Error parsing the response")
 	}
 
-	return *searchDocumentResponse
+	return searchDocumentResponse
 
 }
 
@@ -66,12 +66,12 @@ func (IKD IKApiClient) DocumentFetch(IKSearchdoc IKSearchDocument) IKFetchDocume
 	if err != nil {
 		fmt.Println("Failed to read the response body")
 	}
-	documentFetchResponse := &IKFetchDocumentType{}
-	err = json.Unmarshal(body, documentFetchResponse)
+	documentFetchResponse := IKFetchDocumentType{}
+	err = json.Unmarshal(body, &documentFetchResponse)
 	if err != nil {
 		fmt.Println("Error parsing response")
 	}
-	return *documentFetchResponse
+	return documentFetchResponse
 }
 
 func (IKOD IKApiClient) DocumentFetchOriginal(IKSearchdoc IKSearchDocument) string {
