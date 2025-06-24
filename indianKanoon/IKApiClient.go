@@ -50,40 +50,44 @@ func (IKA IKApiClient) SearchQuery(IKSearchData IKSearchData) IKSearchResponse {
 
 }
 
-func (IKD IKApiClient) DocumentFetch(IKSearchdoc IKSearchDocument) string {
-	req, error := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"doc/"+IKSearchdoc.DocId+"/", nil)
+func (IKD IKApiClient) DocumentFetch(IKSearchdoc IKSearchDocument) IKFetchDocumentType {
+	req, err := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"doc/"+IKSearchdoc.DocId+"/", nil)
 	req.Header.Add("Authorization", "Token"+" "+AUTH_TOKEN)
 	req.Header.Add("Content-Type", "application/json")
-	if error != nil {
+	if err != nil {
 		fmt.Println("Error creating request for fetching document")
 	}
 
-	res, error := IKD.Client.Do(req)
-	if error != nil {
+	res, err := IKD.Client.Do(req)
+	if err != nil {
 		fmt.Println("Error while getting response for fetching document")
 	}
-	body, error := io.ReadAll(res.Body)
-	if error != nil {
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
 		fmt.Println("Failed to read the response body")
 	}
-	return string(body)
-
+	documentFetchResponse := &IKFetchDocumentType{}
+	err = json.Unmarshal(body, documentFetchResponse)
+	if err != nil {
+		fmt.Println("Error parsing response")
+	}
+	return *documentFetchResponse
 }
 
 func (IKOD IKApiClient) DocumentFetchOriginal(IKSearchdoc IKSearchDocument) string {
-	req, error := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"origdoc/"+IKSearchdoc.DocId+"/", nil)
+	req, err := http.NewRequest("POST", INDIAN_KANOON_BASE_URL+"origdoc/"+IKSearchdoc.DocId+"/", nil)
 	req.Header.Add("Authorization", "Token"+" "+AUTH_TOKEN)
 	req.Header.Add("Content-Type", "application/json")
-	if error != nil {
+	if err != nil {
 		fmt.Println("Error creating request for fetching document")
 	}
 
-	res, error := IKOD.Client.Do(req)
-	if error != nil {
+	res, err := IKOD.Client.Do(req)
+	if err != nil {
 		fmt.Println("Error while getting response for fetching original document")
 	}
-	body, error := io.ReadAll(res.Body)
-	if error != nil {
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
 		fmt.Println("Failed to read the response body")
 	}
 	return string(body)
