@@ -11,7 +11,7 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 )
 
-func handleIndianKannonSearch(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+func handleIndianKanoonSearch(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	query := req.GetString("search_query", "")
 	fmt.Println("received Request for query", query)
 	ikApiClient := indianKanoon.GetIKApiClient()
@@ -21,6 +21,21 @@ func handleIndianKannonSearch(ctx context.Context, req mcp.CallToolRequest) (*mc
 	}
 
 	response := ikApiClient.SearchQuery(ikSearchData)
+	jsonBytes, err := json.MarshalIndent(response, "", "  ")
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal search response: %w", err)
+	}
+	return mcp.NewToolResultText(string(jsonBytes)), nil
+}
+func handleIndianKanoonDocumentFetch(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	query := req.GetString("document_id", "")
+	fmt.Println("received Request for query", query)
+	ikApiClient := indianKanoon.GetIKApiClient()
+	ikSearchDocument := indianKanoon.IKSearchDocument{
+		DocId: query,
+	}
+
+	response := ikApiClient.DocumentFetch(ikSearchDocument)
 	jsonBytes, err := json.MarshalIndent(response, "", "  ")
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal search response: %w", err)
@@ -43,7 +58,18 @@ func main() {
 				mcp.Required(),
 			),
 		),
-		handleIndianKannonSearch,
+		handleIndianKanoonSearch,
+	)
+
+	s.AddTool(
+		mcp.NewTool("indian_kannon_fetch_document",
+		mcp.WithDescription("Searches Indian Kanoon for legal documents and returns the document ID (TID), title, publication date, full text, source information, document type, and official court copy status."),
+		mcp.WithString("document_ID",
+		mcp.Description("The document ID (TID) to fetch the full case content"),
+		mcp.Required(),
+			),
+		),
+		handleIndianKanoonDocumentFetch,
 	)
 
 	fmt.Println("Starting HTTP server on :8080...")
