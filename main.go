@@ -27,6 +27,8 @@ func handleIndianKanoonSearch(ctx context.Context, req mcp.CallToolRequest) (*mc
 	}
 	return mcp.NewToolResultText(string(jsonBytes)), nil
 }
+
+
 func handleIndianKanoonDocumentFetch(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	query := req.GetString("document_id", "")
 	fmt.Println("received Request for query", query)
@@ -43,6 +45,7 @@ func handleIndianKanoonDocumentFetch(ctx context.Context, req mcp.CallToolReques
 	return mcp.NewToolResultText(string(jsonBytes)), nil
 }
 
+
 func main() {
 	s := server.NewMCPServer(
 		"indian Kannon MCP server",
@@ -52,9 +55,9 @@ func main() {
 
 	s.AddTool(
 		mcp.NewTool("indian_kannon_search",
-			mcp.WithDescription("This is a tool to make search queries on Indian Kanoon which returns a list of TIDs (document IDs), doctype (judgments or tribunals), published date, docsize, and headline."),
+			mcp.WithDescription("Searches Indian Kanoon for legal case documents (judgments and tribunal decisions) using a free-text query. Returns a list of matching documents, each with its unique document ID (TID), type (judgment or tribunal), publication date, document size, and headline. Useful for retrieving metadata about relevant legal cases based on keywords, party names, citations, or other search terms. The results can be used to fetch full document details with the document ID."),
 			mcp.WithString("search_query",
-				mcp.Description("The query string to search Indian Kanoon"),
+				mcp.Description("A free-text search string to query Indian Kanoon. This can include keywords, party names, case numbers, citations, or any relevant legal search terms. The search is performed across judgments and tribunal decisions."),
 				mcp.Required(),
 			),
 		),
@@ -63,9 +66,9 @@ func main() {
 
 	s.AddTool(
 		mcp.NewTool("indian_kannon_fetch_document",
-		mcp.WithDescription("Searches Indian Kanoon for legal documents and returns the document ID (TID), title, publication date, full text, source information, document type, and official court copy status."),
-		mcp.WithString("document_ID",
-		mcp.Description("The document ID (TID) to fetch the full case content"),
+		mcp.WithDescription("Fetches the full details of a specific legal document from Indian Kanoon using its document ID (TID). Returns the document's title, publication date, full text, source information, document type, and whether it is an official court copy. Use this after obtaining a TID from a search to retrieve the complete case content and metadata."),
+		mcp.WithString("document_id",
+		mcp.Description("The unique document ID (TID) of the legal case to fetch. This ID is obtained from the search tool and is required to retrieve the full text and metadata of the selected case document."),
 		mcp.Required(),
 			),
 		),
