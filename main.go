@@ -25,9 +25,9 @@ func handleIndianKanoonSearch(ctx context.Context, req mcp.CallToolRequest) (*mc
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal search response: %w", err)
 	}
+	fmt.Println("called handleIndianKanoonSearch")
 	return mcp.NewToolResultText(string(jsonBytes)), nil
 }
-
 
 func handleIndianKanoonDocumentFetch(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	query := req.GetString("document_id", "")
@@ -42,9 +42,10 @@ func handleIndianKanoonDocumentFetch(ctx context.Context, req mcp.CallToolReques
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal search response: %w", err)
 	}
+	
+	fmt.Println("called handleIndianKanoonDocumentFetch")
 	return mcp.NewToolResultText(string(jsonBytes)), nil
 }
-
 
 func main() {
 	s := server.NewMCPServer(
@@ -66,20 +67,20 @@ func main() {
 
 	s.AddTool(
 		mcp.NewTool("indian_kannon_fetch_document",
-		mcp.WithDescription("Fetches the full details of a specific legal document from Indian Kanoon using its document ID (TID). Returns the document's title, publication date, full text, source information, document type, and whether it is an official court copy. Use this after obtaining a TID from a search to retrieve the complete case content and metadata."),
-		mcp.WithString("document_id",
-		mcp.Description("The unique document ID (TID) of the legal case to fetch. This ID is obtained from the search tool and is required to retrieve the full text and metadata of the selected case document."),
-		mcp.Required(),
+			mcp.WithDescription("Fetches the full details of a specific legal document from Indian Kanoon using its document ID (TID). Returns the document's title, publication date, full text, source information, document type, and whether it is an official court copy. Use this after obtaining a TID from a search to retrieve the complete case content and metadata."),
+			mcp.WithString("document_id",
+				mcp.Description("The unique document ID (TID) of the legal case to fetch. This ID is obtained from the search tool and is required to retrieve the full text and metadata of the selected case document."),
+				mcp.Required(),
 			),
 		),
 		handleIndianKanoonDocumentFetch,
 	)
 
-	fmt.Println("Starting HTTP server on :8080...")
+	fmt.Println("Starting HTTP server on :8081...")
 
-	log.Println("Starting HTTP server on :8080")
+	log.Println("Starting HTTP server on :8081")
 	httpServer := server.NewStreamableHTTPServer(s)
-	if err := httpServer.Start(":8080"); err != nil {
+	if err := httpServer.Start(":8081"); err != nil {
 		log.Fatal(err)
 	}
 }

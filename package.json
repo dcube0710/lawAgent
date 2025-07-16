@@ -1,0 +1,27 @@
+{
+  "name": "lawagent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcube0710/lawAgent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dcube0710/lawAgent/issues"
+  },
+  "homepage": "https://github.com/dcube0710/lawAgent#readme",
+  "description": "",
+  "dependencies": {
+    "@google/genai": "^1.8.0",
+    "@modelcontextprotocol/sdk": "^1.13.3",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "react-markdown": "^10.1.0"
+  }
+}
